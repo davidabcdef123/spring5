@@ -527,7 +527,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 
 		try {
+			//初始化web application容器
 			this.webApplicationContext = initWebApplicationContext();
+			//空方法
 			initFrameworkServlet();
 		}
 		catch (ServletException | RuntimeException ex) {
@@ -558,15 +560,19 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see #setContextConfigLocation
 	 */
 	protected WebApplicationContext initWebApplicationContext() {
+		//先从servletContext中获得root容器webApplicationContext;
 		WebApplicationContext rootContext =
 				WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+		//声明子容器
 		WebApplicationContext wac = null;
 
+		//建立父子容器之间的关系
 		if (this.webApplicationContext != null) {
 			// A context instance was injected at construction time -> use it
 			wac = this.webApplicationContext;
 			if (wac instanceof ConfigurableWebApplicationContext) {
 				ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) wac;
+				//判短容器是否处于启动
 				if (!cwac.isActive()) {
 					// The context has not yet been refreshed -> provide services such as
 					// setting the parent context, setting the application context id, etc
@@ -579,6 +585,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				}
 			}
 		}
+		//先去servletContext中查抄web容器的引用是否存在，并创建好默认的ioc容器
 		if (wac == null) {
 			// No context instance was injected at construction time -> see if one
 			// has been registered in the servlet context. If one exists, it is assumed
@@ -697,8 +704,11 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			((ConfigurableWebEnvironment) env).initPropertySources(getServletContext(), getServletConfig());
 		}
 
+		//后处理，但是是个空方法
 		postProcessWebApplicationContext(wac);
+		//通过反射实例化容器
 		applyInitializers(wac);
+		//启动容器
 		wac.refresh();
 	}
 
@@ -852,6 +862,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 */
 	protected void onRefresh(ApplicationContext context) {
 		// For subclasses: do nothing by default.
+		//dispatcherServlet实现
 	}
 
 	/**

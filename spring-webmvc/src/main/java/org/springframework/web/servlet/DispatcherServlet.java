@@ -493,14 +493,28 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		//9大组件
+		//多文件上传组件
 		initMultipartResolver(context);
+		//初始化本地语言哈云景
 		initLocaleResolver(context);
+		//初始化模板处理器
 		initThemeResolver(context);
+		//handlermapping初始化
 		initHandlerMappings(context);
+		//初始化适配器参数
 		initHandlerAdapters(context);
+		//初始化异常拦截器
 		initHandlerExceptionResolvers(context);
+		//初始化视图预处理器
 		initRequestToViewNameTranslator(context);
+		//初始化视图预转换器
 		initViewResolvers(context);
+		//方法用于准备DispatcherServlet处理请求时所使用的FlashMapManager策略组件对象。
+		//首先尝试从容器(及其祖先容器)获取名称为flashMapManager的bean组件对象，记录到DispatcherServlet实例成员属性flashMapManager
+
+		//1 DispatcherServlet优先使用注册到容器中名为flashMapManager的FlashMapManager策略组件。利用这一特性，开发人员可以注册一个自定义的FlashMapManager,但必须使用名称flashMapManager。
+		//2 DispatcherServlet的属性flashMapManager总是会对应一个FlashMapManager策略组件,如果容器中名称为flashMapManager的组件不存在,则DispatcherServlet会缺省创建一个FlashMapManager供使用
 		initFlashMapManager(context);
 	}
 
