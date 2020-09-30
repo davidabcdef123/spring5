@@ -44,6 +44,11 @@ import org.springframework.lang.Nullable;
  * @author Adrian Colyer
  * @since 2.0.3
  */
+/**
+ * 从提供的配置实例 config 中获取 advisor 列表 , 遍历处理这些 advisor. 如果是 IntroductionAdvisor,
+ * 则判断此 Advisor 能否应用到目标类 targetClass 上 . 如果是 PointcutAdvisor, 则判断
+ * 此 Advisor 能否应用到目标方法 Method 上 . 将满足条件的 Advisor 通过 AdvisorAdaptor 转化成 Interceptor 列表返回 .
+ */
 @SuppressWarnings("serial")
 public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializable {
 
@@ -53,6 +58,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 
 		// This is somewhat tricky... We have to process introductions first,
 		// but we need to preserve order in the ultimate list.
+		//这里实际上注册一系列 AdvisorAdapter,用于将 Advisor 转化成 MethodInterceptor
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
 		Advisor[] advisors = config.getAdvisors();
 		List<Object> interceptorList = new ArrayList<>(advisors.length);
@@ -68,6 +74,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 					boolean match;
 					if (mm instanceof IntroductionAwareMethodMatcher) {
 						if (hasIntroductions == null) {
+							//查看是否包含 IntroductionAdvisor
 							hasIntroductions = hasMatchingIntroductions(advisors, actualClass);
 						}
 						match = ((IntroductionAwareMethodMatcher) mm).matches(method, actualClass, hasIntroductions);
