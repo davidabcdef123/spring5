@@ -130,9 +130,11 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	 * @param request current HTTP request
 	 * @return the handler instance, or {@code null} if none found
 	 */
+	/** 根据 url 获取处理请求的方法 **/
 	@Override
 	@Nullable
 	protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
+		// 如果请求 url 为,http://localhost:8080/web/hello.json, 则 lookupPath=web/hello.json
 		String lookupPath = initLookupPath(request);
 		Object handler;
 		if (usesPathPatterns()) {
